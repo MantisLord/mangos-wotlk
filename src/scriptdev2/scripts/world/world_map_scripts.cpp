@@ -145,16 +145,20 @@ struct world_map_outland : public ScriptedMap
     world_map_outland(Map* pMap) : ScriptedMap(pMap) { Initialize(); }
 
     uint8 m_uiEmissaryOfHate_KilledAddCount;
+	uint8 m_uiRazaan_KilledAddCount;
 
     void Initialize()
     {
         m_uiEmissaryOfHate_KilledAddCount = 0;
+		m_uiRazaan_KilledAddCount = 0;
     }
 
     void OnCreatureCreate(Creature* pCreature)
     {
         if (pCreature->GetEntry() == NPC_EMISSARY_OF_HATE)
             m_mNpcEntryGuidStore[NPC_EMISSARY_OF_HATE] = pCreature->GetObjectGuid();
+		else if (pCreature->GetEntry() == NPC_PRINCE_RAZAAN)
+			m_mNpcEntryGuidStore[NPC_PRINCE_RAZAAN] = pCreature->GetObjectGuid();
     }
 
     void OnCreatureDeath(Creature* pCreature)
@@ -173,6 +177,19 @@ struct world_map_outland : public ScriptedMap
                     }
                 }
                 break;
+			case NPC_RAZAANI_NEXUS_STALKER:
+			case NPC_RAZAANI_RAIDER:
+			case NPC_RAZAANI_SPELL_THIEF:
+				if (!GetSingleCreatureFromStorage(NPC_PRINCE_RAZAAN, true))
+				{
+					++m_uiRazaan_KilledAddCount;
+					if (m_uiRazaan_KilledAddCount == 10)
+					{
+						pCreature->SummonCreature(NPC_PRINCE_RAZAAN, aSpawnLocations[POS_IDX_PRINCE_RAZAAN][0], aSpawnLocations[POS_IDX_PRINCE_RAZAAN][1], aSpawnLocations[POS_IDX_PRINCE_RAZAAN][2], aSpawnLocations[POS_IDX_PRINCE_RAZAAN][3], TEMPSUMMON_DEAD_DESPAWN, 0);
+						m_uiRazaan_KilledAddCount = 0;
+					}
+				}
+				break;
         }
     }
 
