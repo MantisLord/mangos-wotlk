@@ -28,6 +28,7 @@ npc_threshwackonator
 npc_volcor
 npc_therylune
 npc_rabid_bear
+go_cat_figurine
 EndContentData */
 
 #include "precompiled.h"
@@ -763,6 +764,20 @@ CreatureAI* GetAI_npc_rabid_bear(Creature* pCreature)
     return new npc_rabid_bearAI(pCreature);
 }
 
+/*######
+## go_cat_figurine
+######*/
+
+bool GOUse_go_cat_figurine(Player* pPlayer, GameObject* pGo)
+{
+	uint32 chance = urand(0, 100);
+	if (chance >= 85) {
+		pPlayer->SummonCreature(3619, 0, 0, 0, 0, TEMPSUMMON_DEAD_DESPAWN, 0);
+	}
+	return true;
+}
+
+
 void AddSC_darkshore()
 {
     Script* pNewScript;
@@ -803,4 +818,9 @@ void AddSC_darkshore()
     pNewScript->Name = "npc_rabid_bear";
     pNewScript->GetAI = &GetAI_npc_rabid_bear;
     pNewScript->RegisterSelf();
+
+	pNewScript = new Script;
+	pNewScript->Name = "go_cat_figurine";
+	pNewScript->pGOUse = &GOUse_go_cat_figurine;
+	pNewScript->RegisterSelf();
 }
